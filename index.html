@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STFC Command Dashboard — DrCord · Server 709</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #080c14;
+    --bg2: #0d1420;
+    --bg3: #111c2e;
+    --panel: #0a1628;
+    --border: #1a3050;
+    --border2: #1e4070;
+    --accent: #00b4d8;
+    --accent2: #0077b6;
+    --gold: #f4a261;
+    --green: #2ec27e;
+    --red: #e63946;
+    --purple: #7b2d8b;
+    --text: #c8dff0;
+    --text2: #7a9bb5;
+    --text3: #4a6a85;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Exo 2', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 400;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(0,180,216,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(0,119,182,0.05) 0%, transparent 60%);
+  }
+
+  .scanline {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 999;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(0,180,216,0.04) 0%, transparent 100%);
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 1rem;
+  }
+
+  .delta {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    opacity: 0.9;
+    flex-shrink: 0;
+  }
+
+  .logo-text h1 {
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .logo-text p {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+
+  .header-stats {
+    display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+
+  .progress-strip {
+    height: 3px;
+    background: var(--bg3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  nav {
+    padding: 0 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.25rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .nav-btn:hover { color: var(--text); }
+
+  .nav-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .nav-btn .day-dot {
+    display: inline-block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-left: 6px;
+    vertical-align: middle;
+    margin-top: -2px;
+  }
+
+  .nav-btn.territory-day { color: #a78bfa; }
+  .nav-btn.territory-day.active { color: #a78bfa; border-bottom-color: #a78bfa; }
+  .nav-btn.event-day { color: var(--green); }
+  .nav-btn.event-day.active { color: var(--green); border-bottom-color: var(--green); }
+
+  main {
+    padding: 1.5rem 2rem 3rem;
+    max-width: 960px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .day-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1.25rem; flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .badge-territory { background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+  .badge-event { background: rgba(46,194,126,0.1); color: var(--green); border: 1px solid rgba(46,194,126,0.25); }
+  .badge-urgent { background: rgba(230,57,70,0.1); color: var(--red); border: 1px solid rgba(230,57,70,0.25); }
+  .badge-latinum { background: rgba(244,162,97,0.1); color: var(--gold); border: 1px solid rgba(244,162,97,0.25); }
+
+  .section {
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px; height: 3px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .task {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .task:hover { background: rgba(0,180,216,0.04); border-left-color: var(--border2); }
+
+  .task.done {
+    opacity: 0.45;
+    border-left-color: var(--green);
+  }
+
+  .task.done .task-text { text-decoration: line-through; color: var(--text3); }
+
+  .checkbox {
+    width: 16px; height: 16px;
+    border: 1px solid var(--border2);
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    background: transparent;
+  }
+
+  .task.done .checkbox {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .task.done .checkbox::after {
+    content: '';
+    width: 9px; height: 6px;
+    border-left: 1.5px solid #0a1628;
+    border-bottom: 1.5px solid #0a1628;
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+
+  .task-body { flex: 1; }
+
+  .task-text {
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.45;
+    font-weight: 400;
+  }
+
+  .task-note {
+    font-size: 11.5px;
+    color: var(--text3);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    padding: 1px 6px;
+    border-radius: 2px;
+    margin-left: 6px;
+    vertical-align: middle;
+    text-transform: uppercase;
+  }
+
+  .tag-red { background: rgba(230,57,70,0.15); color: #ff6b6b; border: 1px solid rgba(230,57,70,0.3); }
+  .tag-green { background: rgba(46,194,126,0.12); color: var(--green); border: 1px solid rgba(46,194,126,0.25); }
+  .tag-blue { background: rgba(0,180,216,0.1); color: var(--accent); border: 1px solid rgba(0,180,216,0.25); }
+  .tag-gold { background: rgba(244,162,97,0.1); color: var(--gold); border: 1px solid rgba(244,162,97,0.25); }
+
+  .ship-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ship-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.75rem;
+    transition: border-color 0.2s;
+  }
+
+  .ship-card:hover { border-color: var(--border2); }
+
+  .ship-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .ship-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .mini-bar-bg {
+    background: var(--bg3);
+    border-radius: 2px;
+    height: 3px;
+    overflow: hidden;
+  }
+
+  .mini-bar { height: 100%; border-radius: 2px; }
+
+  .faction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .faction-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.75rem;
+  }
+
+  .faction-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .faction-standing {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+
+  .faction-next {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+
+  .faction-urgent { color: var(--red); font-weight: 600; }
+
+  .credits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .credit-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .credit-faction {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .credit-amount {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--gold);
+    margin-top: 3px;
+  }
+
+  .daily-controls {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    flex: 1;
+  }
+
+  .reset-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .inline-progress {
+    flex: 1;
+    height: 2px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+    min-width: 100px;
+  }
+
+  .inline-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 1rem; }
+    nav { padding: 0 1rem; }
+    main { padding: 1rem 1rem 3rem; }
+    .header-stats { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+
+<header>
+  <div class="logo">
+    <div class="delta"></div>
+    <div class="logo-text">
+      <h1>STFC Command Dashboard</h1>
+      <p>DrCord &nbsp;·&nbsp; Server 709 &nbsp;·&nbsp; Ops 41 &nbsp;·&nbsp; [GROW] Growth Matters &nbsp;·&nbsp; Reset 9pm Pacific</p>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="stat"><div class="stat-label">Enterprise BPs</div><div class="stat-value">126/150</div></div>
+    <div class="stat"><div class="stat-label">Artifact Gallery</div><div class="stat-value">Lvl 32</div></div>
+    <div class="stat"><div class="stat-label">Federation</div><div class="stat-value">25.26M</div></div>
+  </div>
+</header>
+
+<div class="progress-strip"><div class="progress-fill" id="header-progress"></div></div>
+
+<nav id="nav">
+  <button class="nav-btn active" onclick="showPanel('daily',this)" id="nav-daily">Daily</button>
+  <button class="nav-btn" onclick="showPanel('monday',this)">Mon</button>
+  <button class="nav-btn event-day" onclick="showPanel('tuesday',this)">Tue</button>
+  <button class="nav-btn event-day" onclick="showPanel('wednesday',this)">Wed</button>
+  <button class="nav-btn territory-day" onclick="showPanel('thursday',this)">Thu &#9670;</button>
+  <button class="nav-btn territory-day" onclick="showPanel('friday',this)">Fri &#9670;</button>
+  <button class="nav-btn event-day" onclick="showPanel('saturday',this)">Sat</button>
+  <button class="nav-btn territory-day event-day" onclick="showPanel('sunday',this)">Sun &#9670;</button>
+  <button class="nav-btn" onclick="showPanel('urgent',this)">Urgent</button>
+  <button class="nav-btn" onclick="showPanel('ships',this)">Ships</button>
+  <button class="nav-btn" onclick="showPanel('factions',this)">Factions</button>
+</nav>
+
+<main>
+
+<!-- DAILY -->
+<div id="panel-daily" class="panel active">
+  <div class="daily-controls">
+    <span class="progress-label" id="progress-label">0 / 0 tasks</span>
+    <div class="inline-progress"><div class="inline-progress-fill" id="progress-fill"></div></div>
+    <button class="reset-btn" onclick="resetDay()">Reset day</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Morning &nbsp;·&nbsp; 5:15–6:00am</div>
+    <div class="task" onclick="toggle(this,'d1')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Borg Refinery — claim and queue next batch (Vi'Dar)</div></div></div>
+    <div class="task" onclick="toggle(this,'d2')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Away Teams — cycle any completed teams back out</div></div></div>
+    <div class="task" onclick="toggle(this,'d3')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Mining ships — redirect if full, resend if empty</div></div></div>
+    <div class="task" onclick="toggle(this,'d4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Check battle log — overnight hits from FromTheEmbers?</div></div></div>
+    <div class="task" onclick="toggle(this,'d5')"><div class="checkbox"></div><div class="task-body"><div class="task-text">STFC Web Store — claim free daily mission key</div></div></div>
+    <div class="task" onclick="toggle(this,'d6')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Building/Research queues — verify nothing went idle overnight</div></div></div>
+    <div class="task" onclick="toggle(this,'d7')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Bajoran store — claim timed items <span class="tag tag-red">daily timer</span></div>
+      <div class="task-note">Defiant Amplified · Ablative Armor · Plasma Conduits · Subspace Transceivers · Hostile Exchange</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d8')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Ex-Borg store — claim Temporal Disruptors <span class="tag tag-red">daily timer</span></div>
+      <div class="task-note">700 rep to ASSOCIATE — run Vi'Dar to push past it</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d9')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Rogue store — claim Outlaw Warp Token + Directives <span class="tag tag-red">daily timer</span></div>
+    </div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Midday &nbsp;·&nbsp; Work breaks</div>
+    <div class="task" onclick="toggle(this,'d10')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Away Teams — cycle again, use 1hr speedups aggressively</div>
+      <div class="task-note">1,113× 1hr speedups available — don't let teams sit idle</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d11')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Mining ships — redirect if full</div></div></div>
+    <div class="task" onclick="toggle(this,'d12')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Daily Goals — knock out easy ones during downtime</div></div></div>
+    <div class="task" onclick="toggle(this,'d13')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Refinery — claim if ready again</div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Afternoon &nbsp;·&nbsp; 2:00–3:00pm</div>
+    <div class="task" onclick="toggle(this,'d14')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Away Teams legacy store — claim 3 Enterprise BPs <span class="tag tag-red">don't miss</span></div>
+      <div class="task-note">Missing a day = permanent BP loss · Enterprise at 126/150</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d15')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Federation daily missions — rep grind toward CELEBRATED</div>
+      <div class="task-note">4.74M to go</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d16')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Hostile grinding — Defiant for combat goals + faction rep</div></div></div>
+    <div class="task" onclick="toggle(this,'d17')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">D'Vor Latinum runs — T6 is very efficient</div>
+      <div class="task-note">Save +9,900% Amalgam Plundering consumable for big sessions</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d18')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Augment store — buy Reliant BPs (152/200) <span class="tag tag-blue">2 BPs/day</span></div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d19')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Romulan store — buy Augur BPs (35/150) <span class="tag tag-blue">Romulan credits</span></div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d20')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Vi'Dar — hunt Borg probes, keep refinery stocked</div>
+      <div class="task-note">700 Ex-Borg rep to ASSOCIATE — push past it</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d21')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Active events — progress USS Relativity BPs and current arc</div></div></div>
+    <div class="task" onclick="toggle(this,'d22')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Exocomp Factory — claim daily Axionic Chips</div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Evening &nbsp;·&nbsp; 8:00–9:00pm (pre-reset)</div>
+    <div class="task" onclick="toggle(this,'d23')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Claim all Daily Goal rewards before 9pm reset <span class="tag tag-red">before reset</span></div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d24')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Away Teams — final cycle before reset</div></div></div>
+    <div class="task" onclick="toggle(this,'d25')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Mining ships — load up ECS Horizons with Joaquin crew for overnight</div></div></div>
+    <div class="task" onclick="toggle(this,'d26')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Shield check — resources above protected cargo? Shield up</div>
+      <div class="task-note">Extra vigilant on Thu/Fri/Sun territory nights</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'d27')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Building/Research queues — queue long items to run overnight</div>
+      <div class="task-note">505× 3hr speedups available for high-priority items</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- MONDAY -->
+<div id="panel-monday" class="panel">
+  <div class="day-header"><span class="badge badge-latinum">Latinum Monday</span></div>
+  <div class="section">
+    <div class="section-title">Monday special</div>
+    <div class="task" onclick="toggle(this,'mon1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Latinum Monday event — run D'Vor hard today <span class="tag tag-gold">double value</span></div>
+      <div class="task-note">D'Vor T6 is extremely efficient — best Latinum day of the week</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'mon2')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Stack D'Vor runs in afternoon and pre-reset sessions</div></div></div>
+    <div class="task" onclick="toggle(this,'mon3')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Check Treasury building for Latinum-related claims</div></div></div>
+    <div class="task" onclick="toggle(this,'mon4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Rogue store — buy Rare/Uncommon Uranium for Stella upgrades</div></div></div>
+  </div>
+</div>
+
+<!-- TUESDAY -->
+<div id="panel-tuesday" class="panel">
+  <div class="day-header"><span class="badge badge-event">Building and Research</span></div>
+  <div class="section">
+    <div class="section-title">Tuesday special</div>
+    <div class="task" onclick="toggle(this,'tue1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Building and Research SMS event — start/finish upgrades for event points <span class="tag tag-green">event</span></div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'tue2')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Audit all 3 research queues — pull from artifact backlog if idle</div>
+      <div class="task-note">Artifact Gallery at lvl 32, target 38 · Large research backlog available</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'tue3')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Building queue — check Artifact Gallery upgrade progress</div>
+      <div class="task-note">Need more Artifact Gallery Schematics to continue past lvl 32</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'tue4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Officer XP — spend accumulated XP on priority officers</div></div></div>
+  </div>
+</div>
+
+<!-- WEDNESDAY -->
+<div id="panel-wednesday" class="panel">
+  <div class="day-header"><span class="badge badge-event">Cerritos Upgrade Day</span></div>
+  <div class="section">
+    <div class="section-title">Wednesday special</div>
+    <div class="task" onclick="toggle(this,'wed1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Kill hostiles with Combat Exocomp active <span class="tag tag-green">Cerritos BPs</span></div>
+      <div class="task-note">Cerritos just built — now farming upgrade BPs. Don't skip the exocomp</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'wed2')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Check stfc.ovh for today's daily event rotation</div></div></div>
+    <div class="task" onclick="toggle(this,'wed3')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Second Contact event — check if active (Cerritos upgrade materials)</div></div></div>
+    <div class="task" onclick="toggle(this,'wed4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Ensure combat ship is free for exocomp session</div></div></div>
+  </div>
+</div>
+
+<!-- THURSDAY -->
+<div id="panel-thursday" class="panel">
+  <div class="day-header"><span class="badge badge-territory">Territory: Vantar (~9:30am)</span></div>
+  <div class="section">
+    <div class="section-title">Thursday special</div>
+    <div class="task" onclick="toggle(this,'thu1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Vantar Territory Takeover — morning ~9:30am Pacific <span class="tag tag-red">territory</span></div>
+      <div class="task-note">Combat ship free before 9am · Check GROW Discord for coordination</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'thu2')"><div class="checkbox"></div><div class="task-body"><div class="task-text">No overnight Defiant/Bortas runs — keep combat ships free</div></div></div>
+    <div class="task" onclick="toggle(this,'thu3')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Ship Upgrade SMS event — tier up or level a ship if parts available <span class="tag tag-green">event</span></div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'thu4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Territory Embassy — claim Monaveen BPs (84/200)</div></div></div>
+    <div class="task" onclick="toggle(this,'thu5')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Shield up tonight — territory nights attract more aggression</div></div></div>
+  </div>
+</div>
+
+<!-- FRIDAY -->
+<div id="panel-friday" class="panel">
+  <div class="day-header"><span class="badge badge-territory">Territory: Framtid (~9:00am)</span></div>
+  <div class="section">
+    <div class="section-title">Friday special</div>
+    <div class="task" onclick="toggle(this,'fri1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Framtid Territory Takeover — morning ~9am Pacific <span class="tag tag-red">territory</span></div>
+      <div class="task-note">Combat ship free · Check GROW Discord</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'fri2')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Building and Research event — align any upgrades you've been saving <span class="tag tag-green">event</span></div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'fri3')"><div class="checkbox"></div><div class="task-body"><div class="task-text">FC Upgrade SLB — spend FC XP if stockpiled</div></div></div>
+    <div class="task" onclick="toggle(this,'fri4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Weekly chest — claim if available</div></div></div>
+    <div class="task" onclick="toggle(this,'fri5')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Shield up tonight — territory nights attract more aggression</div></div></div>
+  </div>
+</div>
+
+<!-- SATURDAY -->
+<div id="panel-saturday" class="panel">
+  <div class="day-header"><span class="badge badge-event">Artifact Hunt + Ship Upgrade</span></div>
+  <div class="section">
+    <div class="section-title">Saturday special</div>
+    <div class="task" onclick="toggle(this,'sat1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Artifact Hunt SMS — restore/upgrade artifacts for event points <span class="tag tag-green">event</span></div>
+      <div class="task-note">Gallery lvl 32 · Kurlan Naiskos 27/29 · Great Eye of Ara 21/30</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'sat2')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Ship Upgrade SLB — push ship tiers or levels</div></div></div>
+    <div class="task" onclick="toggle(this,'sat3')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Amalgam + Stella — Eclipse/Outlaw farming for Outlaw materials</div></div></div>
+    <div class="task" onclick="toggle(this,'sat4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Weekly admin — research queue audit, officer XP, alliance armadas</div></div></div>
+    <div class="task" onclick="toggle(this,'sat5')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Use +150% Crystal Mining consumables during active mining session</div>
+      <div class="task-note">×4 available — pair with survey fleet for max efficiency</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- SUNDAY -->
+<div id="panel-sunday" class="panel">
+  <div class="day-header">
+    <span class="badge badge-territory">Territory: Innlasn (~9:30am)</span>
+    <span class="badge badge-event">Swarm + Anomalous Phenomena</span>
+  </div>
+  <div class="section">
+    <div class="section-title">Sunday special</div>
+    <div class="task" onclick="toggle(this,'sun1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Innlasn Territory Takeover — morning ~9:30am Pacific <span class="tag tag-red">territory</span></div>
+      <div class="task-note">Combat ship free · Check GROW Discord</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'sun2')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Swarm Sunday — Franklin-A kills Swarm hostiles <span class="tag tag-green">event</span></div>
+      <div class="task-note">Franklin-A T4 lvl 19 is extremely efficient here</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'sun3')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Anomalous Phenomena — use Discovery to collect anomalies <span class="tag tag-green">event</span></div>
+      <div class="task-note">Discovery T4 lvl 20 · Rewards: Discovery upgrade materials + officer shards</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'sun4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Second Contact event — check if active (Cerritos upgrade materials)</div></div></div>
+    <div class="task" onclick="toggle(this,'sun5')"><div class="checkbox"></div><div class="task-body"><div class="task-text">FC Upgrade SMS — spend FC XP for event points</div></div></div>
+    <div class="task" onclick="toggle(this,'sun6')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Shield up tonight — territory nights attract more aggression</div></div></div>
+  </div>
+</div>
+
+<!-- URGENT -->
+<div id="panel-urgent" class="panel">
+  <div class="section">
+    <div class="section-title">Do these now / very soon</div>
+    <div class="task" onclick="toggle(this,'urg1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Ex-Borg: push 700 rep to reach ASSOCIATE <span class="tag tag-red">700 points away</span></div>
+      <div class="task-note">Run Vi'Dar Borg probes — unlocks more store items immediately</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'urg2')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Bajoran: push 1,810 rep to reach FAVORED <span class="tag tag-red">1,810 points away</span></div>
+      <div class="task-note">Unlocks Antares + Valkis Auto Defense Shards and more store items</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'urg3')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Build Enterprise the moment you hit 150 BPs <span class="tag tag-red">~8 days</span></div>
+      <div class="task-note">Currently 126/150 · 3 BPs/day from Away Teams · 34K Latinum ready to use</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'urg4')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Buy Hostile Efficiency favor — Bajoran store, 1,600 credits</div>
+      <div class="task-note">Only 1 level exists · Permanent +30% hostile exchange rewards</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'urg5')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Buy Pagh Ascension favor — Bajoran store (+25% Bajoran rep gains)</div>
+      <div class="task-note">Pays for itself by accelerating future Bajoran progression</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'urg6')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Buy Monaveen TO-3 Efficiency — Ex-Borg store, ×50 for 400 credits</div>
+      <div class="task-note">Actively building Monaveen (84/200) · 1,280 credits on hand</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'urg7')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Rogue: 222,920 rep to KNOWN ASSOCIATE — keep doing Outlaw content</div>
+      <div class="task-note">Unlocks more Stella/Outlaw store items</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'urg8')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Enterprise-A Hull Plating favor — start investing once Enterprise is built</div>
+      <div class="task-note">+200% hull health on Enterprise-A · Massive defensive buff</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- SHIPS -->
+<div id="panel-ships" class="panel">
+  <div class="section">
+    <div class="section-title">Ship BP pipeline</div>
+    <div class="ship-grid">
+      <div class="ship-card"><div class="ship-name">USS Enterprise</div><div class="ship-sub">126/150 BPs · ~8 days</div><div class="mini-bar-bg"><div class="mini-bar" style="width:84%;background:#2ec27e"></div></div></div>
+      <div class="ship-card"><div class="ship-name">USS Reliant</div><div class="ship-sub">152/200 BPs · ~24 days</div><div class="mini-bar-bg"><div class="mini-bar" style="width:76%;background:#2ec27e"></div></div></div>
+      <div class="ship-card"><div class="ship-name">Serene Squall</div><div class="ship-sub">116/200 BPs · ~42 days</div><div class="mini-bar-bg"><div class="mini-bar" style="width:58%;background:#2ec27e"></div></div></div>
+      <div class="ship-card"><div class="ship-name">USS Cerritos</div><div class="ship-sub">Built! Now upgrading</div><div class="mini-bar-bg"><div class="mini-bar" style="width:100%;background:#2ec27e"></div></div></div>
+      <div class="ship-card"><div class="ship-name">Monaveen</div><div class="ship-sub">84/200 BPs (Embassy)</div><div class="mini-bar-bg"><div class="mini-bar" style="width:42%;background:#00b4d8"></div></div></div>
+      <div class="ship-card"><div class="ship-name">Augur</div><div class="ship-sub">35/150 BPs (Romulan)</div><div class="mini-bar-bg"><div class="mini-bar" style="width:23%;background:#00b4d8"></div></div></div>
+      <div class="ship-card"><div class="ship-name">USS Relativity</div><div class="ship-sub">26/200 BPs (event)</div><div class="mini-bar-bg"><div class="mini-bar" style="width:13%;background:#f4a261"></div></div></div>
+      <div class="ship-card"><div class="ship-name">Borg Cube</div><div class="ship-sub">30/100 BPs (long term)</div><div class="mini-bar-bg"><div class="mini-bar" style="width:30%;background:#4a6a85"></div></div></div>
+      <div class="ship-card"><div class="ship-name">Vi'Dar Talios</div><div class="ship-sub">23/100 BPs (occasional)</div><div class="mini-bar-bg"><div class="mini-bar" style="width:23%;background:#4a6a85"></div></div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Current fleet</div>
+    <div class="ship-grid">
+      <div class="ship-card"><div class="ship-name">Defiant</div><div class="ship-sub">T4 lvl 20 · Primary warship</div></div>
+      <div class="ship-card"><div class="ship-name">Bortas</div><div class="ship-sub">Maxed · Battleship</div></div>
+      <div class="ship-card"><div class="ship-name">Saladin</div><div class="ship-sub">Maxed · Interceptor</div></div>
+      <div class="ship-card"><div class="ship-name">Vi'Dar</div><div class="ship-sub">Lvl 30 · Borg hunting</div></div>
+      <div class="ship-card"><div class="ship-name">Franklin-A</div><div class="ship-sub">T4 lvl 19 · Swarm</div></div>
+      <div class="ship-card"><div class="ship-name">Valkis</div><div class="ship-sub">T6 lvl 30 · Romulan</div></div>
+      <div class="ship-card"><div class="ship-name">D'Vor</div><div class="ship-sub">T6 lvl 30 · Latinum</div></div>
+      <div class="ship-card"><div class="ship-name">Discovery</div><div class="ship-sub">T4 lvl 20 · Anomalies</div></div>
+      <div class="ship-card"><div class="ship-name">Amalgam</div><div class="ship-sub">T4 lvl 16 · Eclipse/Outlaw</div></div>
+      <div class="ship-card"><div class="ship-name">Stella</div><div class="ship-sub">T4 lvl 12 · Outlaw</div></div>
+      <div class="ship-card"><div class="ship-name">Titan-A</div><div class="ship-sub">Lvl 5 · Early stage</div></div>
+      <div class="ship-card"><div class="ship-name">Cerritos</div><div class="ship-sub">Just built! Upgrading</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FACTIONS -->
+<div id="panel-factions" class="panel">
+  <div class="section">
+    <div class="section-title">Faction standings</div>
+    <div class="faction-grid">
+      <div class="faction-card"><div class="faction-name">Federation</div><div class="faction-standing">RESPECTED</div><div class="faction-next">4.74M to CELEBRATED</div></div>
+      <div class="faction-card"><div class="faction-name">Klingon</div><div class="faction-standing">RESPECTED</div><div class="faction-next">19.84M to CELEBRATED</div></div>
+      <div class="faction-card"><div class="faction-name">Romulan</div><div class="faction-standing">RESPECTED</div><div class="faction-next">17.89M to CELEBRATED</div></div>
+      <div class="faction-card"><div class="faction-name">Augment</div><div class="faction-standing">ALLY</div><div class="faction-next">2.22M to PATRON</div></div>
+      <div class="faction-card"><div class="faction-name">Rogue</div><div class="faction-standing">ACCOMPLICE</div><div class="faction-next">222.9K to KNOWN ASSOCIATE</div></div>
+      <div class="faction-card"><div class="faction-name">Bajoran</div><div class="faction-standing">MILITIA</div><div class="faction-next"><span class="faction-urgent">1,810 to FAVORED</span></div></div>
+      <div class="faction-card"><div class="faction-name">Ex-Borg</div><div class="faction-standing">FAVORED</div><div class="faction-next"><span class="faction-urgent">700 to ASSOCIATE</span></div></div>
+      <div class="faction-card"><div class="faction-name">Section 31</div><div class="faction-standing">ASSET</div><div class="faction-next">—</div></div>
+      <div class="faction-card"><div class="faction-name">Terran</div><div class="faction-standing">LACKEY</div><div class="faction-next">—</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Credits on hand</div>
+    <div class="credits-grid">
+      <div class="credit-card"><div class="credit-faction">Federation</div><div class="credit-amount">3,983</div></div>
+      <div class="credit-card"><div class="credit-faction">Klingon</div><div class="credit-amount">25.5K</div></div>
+      <div class="credit-card"><div class="credit-faction">Romulan</div><div class="credit-amount">5,485</div></div>
+      <div class="credit-card"><div class="credit-faction">Augment</div><div class="credit-amount">1,232</div></div>
+      <div class="credit-card"><div class="credit-faction">Rogue</div><div class="credit-amount">355</div></div>
+      <div class="credit-card"><div class="credit-faction">Bajoran</div><div class="credit-amount">571</div></div>
+      <div class="credit-card"><div class="credit-faction">Ex-Borg</div><div class="credit-amount">1,280</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Bajoran favors — priority purchases</div>
+    <div class="task" onclick="toggle(this,'fav1')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Hostile Efficiency lvl 1 — 1,600 credits (+30% hostile exchange rewards)</div>
+      <div class="task-note">Only 1 level exists · Permanent daily bonus</div>
+    </div></div>
+    <div class="task" onclick="toggle(this,'fav2')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Pagh Ascension — increases Bajoran rep gains 25%</div></div></div>
+    <div class="task" onclick="toggle(this,'fav3')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Kira's Fist — 0% to 40% base piercing stats</div></div></div>
+    <div class="task" onclick="toggle(this,'fav4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Continue Quantum Torpedoes (4/12) — Defiant kinetic damage vs Jem'Hadar</div></div></div>
+    <div class="task" onclick="toggle(this,'fav5')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Bajoran Crystal/Gas/Ore Refineries — each gives +50% G4/G5 refinery rewards</div></div></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const STORAGE_KEY = 'stfc_checklist_v1';
+const DAY_KEY = 'stfc_checklist_date';
+
+function getState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+}
+
+function saveState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function getSavedDate() {
+  return localStorage.getItem(DAY_KEY) || '';
+}
+
+function saveDate(d) {
+  try { localStorage.setItem(DAY_KEY, d); } catch(e) {}
+}
+
+function getTodayStr() {
+  return new Date().toDateString();
+}
+
+function toggle(el, id) {
+  el.classList.toggle('done');
+  const state = getState();
+  state[id] = el.classList.contains('done');
+  saveState(state);
+  updateProgress();
+}
+
+function restoreState() {
+  const today = getTodayStr();
+  const saved = getSavedDate();
+  if (saved !== today) {
+    const state = getState();
+    Object.keys(state).forEach(k => { if (k.startsWith('d')) state[k] = false; });
+    saveState(state);
+    saveDate(today);
+  }
+  const state = getState();
+  document.querySelectorAll('.task').forEach(task => {
+    const fn = task.getAttribute('onclick');
+    if (!fn) return;
+    const m = fn.match(/'([^']+)'\)/);
+    if (m && state[m[1]]) task.classList.add('done');
+  });
+}
+
+function updateProgress() {
+  const panel = document.getElementById('panel-daily');
+  const tasks = panel.querySelectorAll('.task');
+  const done = panel.querySelectorAll('.task.done').length;
+  const total = tasks.length;
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('header-progress').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = done + ' / ' + total + ' tasks  (' + pct + '%)';
+}
+
+function resetDay() {
+  document.querySelectorAll('#panel-daily .task').forEach(t => t.classList.remove('done'));
+  const state = getState();
+  Object.keys(state).forEach(k => { if (k.startsWith('d')) state[k] = false; });
+  saveState(state);
+  updateProgress();
+}
+
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'daily') updateProgress();
+}
+
+function highlightToday() {
+  const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const today = days[new Date().getDay()];
+  const btns = document.querySelectorAll('.nav-btn');
+  btns.forEach(b => {
+    const fn = b.getAttribute('onclick') || '';
+    if (fn.includes("'" + today + "'")) {
+      b.innerHTML = b.innerHTML + ' <span class="day-dot"></span>';
+    }
+  });
+}
+
+restoreState();
+updateProgress();
+highlightToday();
+</script>
+</body>
+</html>
