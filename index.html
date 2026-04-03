@@ -19,7 +19,6 @@
     --gold: #f4a261;
     --green: #2ec27e;
     --red: #e63946;
-    --purple: #7b2d8b;
     --text: #c8dff0;
     --text2: #7a9bb5;
     --text3: #4a6a85;
@@ -54,139 +53,77 @@
     flex-wrap: wrap; gap: 1rem;
   }
 
-  .logo {
-    display: flex; align-items: center; gap: 1rem;
-  }
+  .logo { display: flex; align-items: center; gap: 1rem; }
 
   .delta {
     width: 36px; height: 36px;
     background: var(--accent);
     clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-    opacity: 0.9;
-    flex-shrink: 0;
+    opacity: 0.9; flex-shrink: 0;
   }
 
   .logo-text h1 {
-    font-family: var(--mono);
-    font-size: 16px;
-    color: var(--accent);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-family: var(--mono); font-size: 16px; color: var(--accent);
+    letter-spacing: 0.15em; text-transform: uppercase;
   }
 
   .logo-text p {
-    font-size: 11px;
-    color: var(--text3);
-    font-family: var(--mono);
-    letter-spacing: 0.1em;
-    margin-top: 2px;
+    font-size: 11px; color: var(--text3); font-family: var(--mono);
+    letter-spacing: 0.1em; margin-top: 2px;
   }
 
-  .header-stats {
-    display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
-  }
+  .header-stats { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
 
-  .stat {
-    text-align: center;
-  }
+  .stat { text-align: center; }
 
   .stat-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-family: var(--mono); font-size: 10px; color: var(--text3);
+    letter-spacing: 0.1em; text-transform: uppercase;
   }
 
-  .stat-value {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--accent);
-    margin-top: 2px;
-  }
+  .stat-value { font-family: var(--mono); font-size: 14px; color: var(--accent); margin-top: 2px; }
 
-  .progress-strip {
-    height: 3px;
-    background: var(--bg3);
-    position: relative;
-    overflow: hidden;
-  }
+  .progress-strip { height: 3px; background: var(--bg3); position: relative; overflow: hidden; }
 
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--accent2), var(--accent));
-    transition: width 0.4s ease;
-    width: 0%;
+    transition: width 0.4s ease; width: 0%;
   }
 
   nav {
     padding: 0 2rem;
     border-bottom: 1px solid var(--border);
     display: flex; gap: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
+    overflow-x: auto; scrollbar-width: none;
   }
 
   nav::-webkit-scrollbar { display: none; }
 
   .nav-btn {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 0.85rem 1.25rem;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text3);
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    position: relative;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 0.85rem 1.25rem;
+    background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--text3); cursor: pointer; transition: all 0.2s; white-space: nowrap;
   }
 
   .nav-btn:hover { color: var(--text); }
-
-  .nav-btn.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  .nav-btn .day-dot {
-    display: inline-block;
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--green);
-    margin-left: 6px;
-    vertical-align: middle;
-    margin-top: -2px;
-  }
-
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
   .nav-btn.territory-day { color: #a78bfa; }
   .nav-btn.territory-day.active { color: #a78bfa; border-bottom-color: #a78bfa; }
   .nav-btn.event-day { color: var(--green); }
   .nav-btn.event-day.active { color: var(--green); border-bottom-color: var(--green); }
 
-  main {
-    padding: 1.5rem 2rem 3rem;
-    max-width: 960px;
-  }
+  main { padding: 1.5rem 2rem 3rem; max-width: 960px; }
 
   .panel { display: none; }
   .panel.active { display: block; }
 
-  .day-header {
-    display: flex; align-items: center; gap: 0.75rem;
-    margin-bottom: 1.25rem; flex-wrap: wrap;
-  }
+  .day-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
 
   .badge {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 2px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 2px;
   }
 
   .badge-territory { background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
@@ -194,101 +131,53 @@
   .badge-urgent { background: rgba(230,57,70,0.1); color: var(--red); border: 1px solid rgba(230,57,70,0.25); }
   .badge-latinum { background: rgba(244,162,97,0.1); color: var(--gold); border: 1px solid rgba(244,162,97,0.25); }
 
-  .section {
-    margin-bottom: 2rem;
-  }
+  .section { margin-bottom: 2rem; }
 
   .section-title {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border);
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
     display: flex; align-items: center; gap: 0.5rem;
   }
 
   .section-title::before {
-    content: '';
-    display: inline-block;
-    width: 3px; height: 3px;
-    background: var(--accent);
-    border-radius: 50%;
+    content: ''; display: inline-block; width: 3px; height: 3px;
+    background: var(--accent); border-radius: 50%;
   }
 
   .task {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.6rem 0.75rem;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background 0.15s;
-    border-left: 2px solid transparent;
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.6rem 0.75rem; border-radius: 3px; cursor: pointer;
+    transition: background 0.15s; border-left: 2px solid transparent;
   }
 
   .task:hover { background: rgba(0,180,216,0.04); border-left-color: var(--border2); }
-
-  .task.done {
-    opacity: 0.45;
-    border-left-color: var(--green);
-  }
-
+  .task.done { opacity: 0.45; border-left-color: var(--green); }
   .task.done .task-text { text-decoration: line-through; color: var(--text3); }
 
   .checkbox {
-    width: 16px; height: 16px;
-    border: 1px solid var(--border2);
-    border-radius: 2px;
-    flex-shrink: 0;
-    margin-top: 2px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-    background: transparent;
+    width: 16px; height: 16px; border: 1px solid var(--border2); border-radius: 2px;
+    flex-shrink: 0; margin-top: 2px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.15s; background: transparent;
   }
 
-  .task.done .checkbox {
-    background: var(--green);
-    border-color: var(--green);
-  }
+  .task.done .checkbox { background: var(--green); border-color: var(--green); }
 
   .task.done .checkbox::after {
-    content: '';
-    width: 9px; height: 6px;
-    border-left: 1.5px solid #0a1628;
-    border-bottom: 1.5px solid #0a1628;
-    transform: rotate(-45deg) translateY(-1px);
-    display: block;
+    content: ''; width: 9px; height: 6px;
+    border-left: 1.5px solid #0a1628; border-bottom: 1.5px solid #0a1628;
+    transform: rotate(-45deg) translateY(-1px); display: block;
   }
 
   .task-body { flex: 1; }
 
-  .task-text {
-    font-size: 13.5px;
-    color: var(--text);
-    line-height: 1.45;
-    font-weight: 400;
-  }
-
-  .task-note {
-    font-size: 11.5px;
-    color: var(--text3);
-    margin-top: 3px;
-    font-family: var(--mono);
-  }
+  .task-text { font-size: 13.5px; color: var(--text); line-height: 1.45; font-weight: 400; }
+  .task-note { font-size: 11.5px; color: var(--text3); margin-top: 3px; font-family: var(--mono); }
 
   .tag {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    padding: 1px 6px;
-    border-radius: 2px;
-    margin-left: 6px;
-    vertical-align: middle;
-    text-transform: uppercase;
+    display: inline-block; font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.08em; padding: 1px 6px; border-radius: 2px;
+    margin-left: 6px; vertical-align: middle; text-transform: uppercase;
   }
 
   .tag-red { background: rgba(230,57,70,0.15); color: #ff6b6b; border: 1px solid rgba(230,57,70,0.3); }
@@ -297,155 +186,68 @@
   .tag-gold { background: rgba(244,162,97,0.1); color: var(--gold); border: 1px solid rgba(244,162,97,0.25); }
 
   .ship-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
   }
 
   .ship-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 0.75rem;
-    transition: border-color 0.2s;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.75rem; transition: border-color 0.2s;
   }
 
   .ship-card:hover { border-color: var(--border2); }
-
-  .ship-name {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
-  }
-
-  .ship-sub {
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 8px;
-  }
-
-  .mini-bar-bg {
-    background: var(--bg3);
-    border-radius: 2px;
-    height: 3px;
-    overflow: hidden;
-  }
-
+  .ship-name { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .ship-sub { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+  .mini-bar-bg { background: var(--bg3); border-radius: 2px; height: 3px; overflow: hidden; }
   .mini-bar { height: 100%; border-radius: 2px; }
 
   .faction-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.6rem;
-    margin-bottom: 1.5rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.6rem; margin-bottom: 1.5rem;
   }
 
-  .faction-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 0.75rem;
-  }
-
-  .faction-name {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .faction-standing {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text);
-    letter-spacing: 0.04em;
-  }
-
-  .faction-next {
-    font-size: 10px;
-    color: var(--text3);
-    margin-top: 3px;
-    font-family: var(--mono);
-  }
-
+  .faction-card { background: var(--panel); border: 1px solid var(--border); border-radius: 3px; padding: 0.75rem; }
+  .faction-name { font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .faction-standing { font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
+  .faction-next { font-size: 10px; color: var(--text3); margin-top: 3px; font-family: var(--mono); }
   .faction-urgent { color: var(--red); font-weight: 600; }
 
   .credits-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 0.6rem;
-    margin-bottom: 1.5rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.6rem; margin-bottom: 1.5rem;
   }
 
-  .credit-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 0.6rem 0.75rem;
-  }
+  .credit-card { background: var(--panel); border: 1px solid var(--border); border-radius: 3px; padding: 0.6rem 0.75rem; }
+  .credit-faction { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+  .credit-amount { font-family: var(--mono); font-size: 14px; color: var(--gold); margin-top: 3px; }
 
-  .credit-faction {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .credit-amount {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--gold);
-    margin-top: 3px;
-  }
-
-  .daily-controls {
-    display: flex; align-items: center; gap: 1rem;
-    margin-bottom: 1rem; flex-wrap: wrap;
-  }
-
-  .progress-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text3);
-    flex: 1;
-  }
+  .daily-controls { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .progress-label { font-family: var(--mono); font-size: 11px; color: var(--text3); flex: 1; }
 
   .reset-btn {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 5px 14px;
-    background: none;
-    border: 1px solid var(--border2);
-    color: var(--text3);
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.2s;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 5px 14px; background: none;
+    border: 1px solid var(--border2); color: var(--text3); cursor: pointer;
+    border-radius: 2px; transition: all 0.2s;
   }
 
   .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  .inline-progress {
-    flex: 1;
-    height: 2px;
-    background: var(--bg3);
-    border-radius: 2px;
-    overflow: hidden;
-    min-width: 100px;
-  }
+  .inline-progress { flex: 1; height: 2px; background: var(--bg3); border-radius: 2px; overflow: hidden; min-width: 100px; }
+  .inline-progress-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
 
-  .inline-progress-fill {
-    height: 100%;
-    background: var(--accent);
-    transition: width 0.3s ease;
+  .tier-list { margin-bottom: 1.5rem; }
+  .tier-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.5rem 0.75rem; border-left: 2px solid var(--border);
+    margin-bottom: 4px; font-size: 12px; font-family: var(--mono);
   }
+  .tier-row.current { border-left-color: var(--green); color: var(--green); }
+  .tier-row.next { border-left-color: var(--gold); color: var(--gold); }
+  .tier-row.future { color: var(--text3); }
+  .tier-pts { font-size: 10px; color: var(--text3); margin-left: auto; }
+  .tier-row.current .tier-pts { color: var(--green); }
+  .tier-row.next .tier-pts { color: var(--gold); }
 
   @media (max-width: 600px) {
     header { padding: 1rem; }
@@ -476,7 +278,7 @@
 <div class="progress-strip"><div class="progress-fill" id="header-progress"></div></div>
 
 <nav id="nav">
-  <button class="nav-btn active" onclick="showPanel('daily',this)" id="nav-daily">Daily</button>
+  <button class="nav-btn active" onclick="showPanel('daily',this)">Daily</button>
   <button class="nav-btn" onclick="showPanel('monday',this)">Mon</button>
   <button class="nav-btn event-day" onclick="showPanel('tuesday',this)">Tue</button>
   <button class="nav-btn event-day" onclick="showPanel('wednesday',this)">Wed</button>
@@ -513,7 +315,7 @@
     </div></div>
     <div class="task" onclick="toggle(this,'d8')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Ex-Borg store — claim Temporal Disruptors <span class="tag tag-red">daily timer</span></div>
-      <div class="task-note">700 rep to ASSOCIATE — run Vi'Dar to push past it</div>
+      <div class="task-note">Ex-Borg at FAVORED — keep running Vi'Dar toward ASSOCIATE</div>
     </div></div>
     <div class="task" onclick="toggle(this,'d9')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Rogue store — claim Outlaw Warp Token + Directives <span class="tag tag-red">daily timer</span></div>
@@ -524,7 +326,7 @@
     <div class="section-title">Midday &nbsp;·&nbsp; Work breaks</div>
     <div class="task" onclick="toggle(this,'d10')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Away Teams — cycle again, use 1hr speedups aggressively</div>
-      <div class="task-note">1,113× 1hr speedups available — don't let teams sit idle</div>
+      <div class="task-note">1,113x 1hr speedups available — don't let teams sit idle</div>
     </div></div>
     <div class="task" onclick="toggle(this,'d11')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Mining ships — redirect if full</div></div></div>
     <div class="task" onclick="toggle(this,'d12')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Daily Goals — knock out easy ones during downtime</div></div></div>
@@ -554,7 +356,7 @@
     </div></div>
     <div class="task" onclick="toggle(this,'d20')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Vi'Dar — hunt Borg probes, keep refinery stocked</div>
-      <div class="task-note">700 Ex-Borg rep to ASSOCIATE — push past it</div>
+      <div class="task-note">Ex-Borg at FAVORED — push toward ASSOCIATE</div>
     </div></div>
     <div class="task" onclick="toggle(this,'d21')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Active events — progress USS Relativity BPs and current arc</div></div></div>
     <div class="task" onclick="toggle(this,'d22')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Exocomp Factory — claim daily Axionic Chips</div></div></div>
@@ -573,7 +375,7 @@
     </div></div>
     <div class="task" onclick="toggle(this,'d27')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Building/Research queues — queue long items to run overnight</div>
-      <div class="task-note">505× 3hr speedups available for high-priority items</div>
+      <div class="task-note">505x 3hr speedups available for high-priority items</div>
     </div></div>
   </div>
 </div>
@@ -678,7 +480,7 @@
     <div class="task" onclick="toggle(this,'sat4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Weekly admin — research queue audit, officer XP, alliance armadas</div></div></div>
     <div class="task" onclick="toggle(this,'sat5')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Use +150% Crystal Mining consumables during active mining session</div>
-      <div class="task-note">×4 available — pair with survey fleet for max efficiency</div>
+      <div class="task-note">x4 available — pair with survey fleet for max efficiency</div>
     </div></div>
   </div>
 </div>
@@ -714,12 +516,12 @@
   <div class="section">
     <div class="section-title">Do these now / very soon</div>
     <div class="task" onclick="toggle(this,'urg1')"><div class="checkbox"></div><div class="task-body">
-      <div class="task-text">Ex-Borg: push 700 rep to reach ASSOCIATE <span class="tag tag-red">700 points away</span></div>
-      <div class="task-note">Run Vi'Dar Borg probes — unlocks more store items immediately</div>
+      <div class="task-text">Ex-Borg: push rep to reach ASSOCIATE <span class="tag tag-red">in progress</span></div>
+      <div class="task-note">Currently FAVORED — run Vi'Dar Borg probes daily to push past it</div>
     </div></div>
     <div class="task" onclick="toggle(this,'urg2')"><div class="checkbox"></div><div class="task-body">
-      <div class="task-text">Bajoran: push 1,810 rep to reach FAVORED <span class="tag tag-red">1,810 points away</span></div>
-      <div class="task-note">Unlocks Antares + Valkis Auto Defense Shards and more store items</div>
+      <div class="task-text">Bajoran: push 33,810 rep to reach PAGH-STRONG <span class="tag tag-red">next tier</span></div>
+      <div class="task-note">Currently FAVORED (16,190 pts) · PAGH-STRONG unlocks Auto Defense Shards + Refineries</div>
     </div></div>
     <div class="task" onclick="toggle(this,'urg3')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Build Enterprise the moment you hit 150 BPs <span class="tag tag-red">~8 days</span></div>
@@ -727,22 +529,22 @@
     </div></div>
     <div class="task" onclick="toggle(this,'urg4')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Buy Hostile Efficiency favor — Bajoran store, 1,600 credits</div>
-      <div class="task-note">Only 1 level exists · Permanent +30% hostile exchange rewards</div>
+      <div class="task-note">Only 1 level exists · Permanent +30% hostile exchange rewards · Available now</div>
     </div></div>
     <div class="task" onclick="toggle(this,'urg5')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Buy Pagh Ascension favor — Bajoran store (+25% Bajoran rep gains)</div>
-      <div class="task-note">Pays for itself by accelerating future Bajoran progression</div>
+      <div class="task-note">Pays for itself — accelerates grind to PAGH-STRONG · Available now</div>
     </div></div>
     <div class="task" onclick="toggle(this,'urg6')"><div class="checkbox"></div><div class="task-body">
-      <div class="task-text">Buy Monaveen TO-3 Efficiency — Ex-Borg store, ×50 for 400 credits</div>
+      <div class="task-text">Buy Monaveen TO-3 Efficiency — Ex-Borg store, x50 for 400 credits</div>
       <div class="task-note">Actively building Monaveen (84/200) · 1,280 credits on hand</div>
     </div></div>
     <div class="task" onclick="toggle(this,'urg7')"><div class="checkbox"></div><div class="task-body">
-      <div class="task-text">Rogue: 222,920 rep to KNOWN ASSOCIATE — keep doing Outlaw content</div>
+      <div class="task-text">Rogue: grind to KNOWN ASSOCIATE (222,920 rep away)</div>
       <div class="task-note">Unlocks more Stella/Outlaw store items</div>
     </div></div>
     <div class="task" onclick="toggle(this,'urg8')"><div class="checkbox"></div><div class="task-body">
-      <div class="task-text">Enterprise-A Hull Plating favor — start investing once Enterprise is built</div>
+      <div class="task-text">Enterprise-A Hull Plating favor — invest once Enterprise is built</div>
       <div class="task-note">+200% hull health on Enterprise-A · Massive defensive buff</div>
     </div></div>
   </div>
@@ -793,10 +595,22 @@
       <div class="faction-card"><div class="faction-name">Romulan</div><div class="faction-standing">RESPECTED</div><div class="faction-next">17.89M to CELEBRATED</div></div>
       <div class="faction-card"><div class="faction-name">Augment</div><div class="faction-standing">ALLY</div><div class="faction-next">2.22M to PATRON</div></div>
       <div class="faction-card"><div class="faction-name">Rogue</div><div class="faction-standing">ACCOMPLICE</div><div class="faction-next">222.9K to KNOWN ASSOCIATE</div></div>
-      <div class="faction-card"><div class="faction-name">Bajoran</div><div class="faction-standing">MILITIA</div><div class="faction-next"><span class="faction-urgent">1,810 to FAVORED</span></div></div>
-      <div class="faction-card"><div class="faction-name">Ex-Borg</div><div class="faction-standing">FAVORED</div><div class="faction-next"><span class="faction-urgent">700 to ASSOCIATE</span></div></div>
+      <div class="faction-card"><div class="faction-name">Bajoran</div><div class="faction-standing">FAVORED</div><div class="faction-next"><span class="faction-urgent">33,810 to PAGH-STRONG</span></div></div>
+      <div class="faction-card"><div class="faction-name">Ex-Borg</div><div class="faction-standing">FAVORED</div><div class="faction-next"><span class="faction-urgent">grinding to ASSOCIATE</span></div></div>
       <div class="faction-card"><div class="faction-name">Section 31</div><div class="faction-standing">ASSET</div><div class="faction-next">—</div></div>
       <div class="faction-card"><div class="faction-name">Terran</div><div class="faction-standing">LACKEY</div><div class="faction-next">—</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Bajoran tier progression</div>
+    <div class="tier-list">
+      <div class="tier-row future">MILITIA <span class="tier-pts">completed</span></div>
+      <div class="tier-row current">FAVORED &#10003; <span class="tier-pts">16,190 pts</span></div>
+      <div class="tier-row next">PAGH-STRONG <span class="tier-pts">33,810 to go · unlocks Auto Defense Shards + Refineries</span></div>
+      <div class="tier-row future">KOHN-MA <span class="tier-pts">future · unlocks K'Vort/Hydra/Vorta Vor/B'Chor Auto Defense</span></div>
+      <div class="tier-row future">HIGA METAR <span class="tier-pts">future</span></div>
+      <div class="tier-row future">RESISTER <span class="tier-pts">future</span></div>
+      <div class="tier-row future">PROPHET CHOSEN <span class="tier-pts">future</span></div>
     </div>
   </div>
   <div class="section">
@@ -815,12 +629,18 @@
     <div class="section-title">Bajoran favors — priority purchases</div>
     <div class="task" onclick="toggle(this,'fav1')"><div class="checkbox"></div><div class="task-body">
       <div class="task-text">Hostile Efficiency lvl 1 — 1,600 credits (+30% hostile exchange rewards)</div>
-      <div class="task-note">Only 1 level exists · Permanent daily bonus</div>
+      <div class="task-note">Only 1 level exists · Permanent daily bonus · Available now</div>
     </div></div>
-    <div class="task" onclick="toggle(this,'fav2')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Pagh Ascension — increases Bajoran rep gains 25%</div></div></div>
+    <div class="task" onclick="toggle(this,'fav2')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Pagh Ascension — increases Bajoran rep gains 25%</div>
+      <div class="task-note">Accelerates grind to PAGH-STRONG · Available now</div>
+    </div></div>
     <div class="task" onclick="toggle(this,'fav3')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Kira's Fist — 0% to 40% base piercing stats</div></div></div>
     <div class="task" onclick="toggle(this,'fav4')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Continue Quantum Torpedoes (4/12) — Defiant kinetic damage vs Jem'Hadar</div></div></div>
-    <div class="task" onclick="toggle(this,'fav5')"><div class="checkbox"></div><div class="task-body"><div class="task-text">Bajoran Crystal/Gas/Ore Refineries — each gives +50% G4/G5 refinery rewards</div></div></div>
+    <div class="task" onclick="toggle(this,'fav5')"><div class="checkbox"></div><div class="task-body">
+      <div class="task-text">Bajoran Crystal/Gas/Ore Refineries — each gives +50% G4/G5 refinery rewards</div>
+      <div class="task-note">Unlocks at PAGH-STRONG · Priority once you hit that tier</div>
+    </div></div>
   </div>
 </div>
 
@@ -838,17 +658,9 @@ function saveState(state) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
 }
 
-function getSavedDate() {
-  return localStorage.getItem(DAY_KEY) || '';
-}
-
-function saveDate(d) {
-  try { localStorage.setItem(DAY_KEY, d); } catch(e) {}
-}
-
-function getTodayStr() {
-  return new Date().toDateString();
-}
+function getSavedDate() { return localStorage.getItem(DAY_KEY) || ''; }
+function saveDate(d) { try { localStorage.setItem(DAY_KEY, d); } catch(e) {} }
+function getTodayStr() { return new Date().toDateString(); }
 
 function toggle(el, id) {
   el.classList.toggle('done');
@@ -884,7 +696,7 @@ function updateProgress() {
   const pct = total > 0 ? Math.round(done / total * 100) : 0;
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('header-progress').style.width = pct + '%';
-  document.getElementById('progress-label').textContent = done + ' / ' + total + ' tasks  (' + pct + '%)';
+  document.getElementById('progress-label').textContent = done + ' / ' + total + ' tasks (' + pct + '%)';
 }
 
 function resetDay() {
@@ -906,11 +718,12 @@ function showPanel(id, btn) {
 function highlightToday() {
   const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
   const today = days[new Date().getDay()];
-  const btns = document.querySelectorAll('.nav-btn');
-  btns.forEach(b => {
+  document.querySelectorAll('.nav-btn').forEach(b => {
     const fn = b.getAttribute('onclick') || '';
     if (fn.includes("'" + today + "'")) {
-      b.innerHTML = b.innerHTML + ' <span class="day-dot"></span>';
+      const dot = document.createElement('span');
+      dot.style.cssText = 'display:inline-block;width:5px;height:5px;border-radius:50%;background:#2ec27e;margin-left:6px;vertical-align:middle;margin-top:-2px;';
+      b.appendChild(dot);
     }
   });
 }
